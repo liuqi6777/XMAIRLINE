@@ -19,22 +19,23 @@ typedef enum FlightType
 
 typedef enum AirplaneType
 {
-    type1,
+    type1 = 1,
     type2,
     type3
 } AirplaneType;
 
 typedef int AirportID; // 机场（顶点）
 
-class Flight;
-class AirLine;
-
 class Flight // 航班（弧）
 {
 public:
-    Flight(int id, AirportID departure, AirportID arrival, FlightType ft, AirplaneType at, Datetime departure_t, Datetime arrival_time, int fare);
+    Flight(int id, AirportID d, AirportID a, FlightType ft, AirplaneType at,
+           Datetime dtime, Datetime atime, int fares)
+        : id(id), departure_airport(d), arrival_airport(a), flight_type(ft),
+          airplane_type(at), departure_time(dtime), arrival_time(atime), fares(fares) {}
+
     Flight(Flight &other);
-    ~Flight();
+    ~Flight() {};
 
     int ID() const;
     AirportID get_departure_airport() const;
@@ -43,21 +44,18 @@ public:
     Datetime get_arrival_time() const;
     FlightType get_flight_type() const;
     AirplaneType get_airplane_type() const;
-    TimeDelta get_flight_time() const;
+    TimeDelta get_flight_time();
     int get_fares() const;
 
     Flight &operator=(const Flight &other);
 
-    friend ostream &operator>>(const ostream &os, const Flight &self);
-
-    friend AirLine;
+    friend ostream &operator>>(ostream &os, const Flight &self);
 
 private:
     int id;
-    int no;
     AirportID departure_airport;
     AirportID arrival_airport;
-    FlightType airline_type;
+    FlightType flight_type;
     AirplaneType airplane_type;
     Datetime departure_time;
     Datetime arrival_time;
@@ -70,7 +68,7 @@ public:
     AirLine(vector<Flight> &flights);
     ~AirLine();
 
-    vector<int> get_ids();
+    vector<int>& get_ids();
     AirportID get_departure_airport();
     AirportID get_arrival_airport();
     Datetime get_departure_time();
@@ -81,6 +79,7 @@ public:
 
 private:
     vector<Flight> flights;
+    int airport_num; // 途经机场的个数（包括起点和终点）
 };
 
 #endif

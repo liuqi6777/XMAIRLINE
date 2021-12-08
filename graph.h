@@ -6,7 +6,7 @@
 
 using namespace std;
 
-const int MAX_VERTEX_NUM = 2400;
+const int MAX_VERTEX_NUM = 80;
 
 // 邻接矩阵
 template <typename VertexType, typename InfoType>

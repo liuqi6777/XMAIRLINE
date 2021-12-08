@@ -3,6 +3,7 @@
 #include "graph.h"
 #include "airline.h"
 #include "datetime.h"
+#include "datautils.h"
 
 class App
 {
@@ -28,16 +29,15 @@ private:
     ALGraph<AirportID, Flight> *data;
 
     void find_baisc(AirportID departure, AirportID arrival, int (*condition)(const AirLine &));
-    void sort_basic(int (*cmp)(const AirLine&, const AirLine &), bool reversed = false);
+    void sort_basic(int (*cmp)(const AirLine&, const AirLine &)); // std::sort()
 };
 
 int main()
 {
-    // 1. 读取数据，将字符串转换成航班数据
+    // 1. 读取数据，将字符串转换成航班数据并存储在一个 vector 中
     string data_path = "data\\airline.csv";
-
-    // for data in all read data
-    //     vector[i] = Flight(data)
+    vector<Flight> flights;
+    read_data(data_path, flights);
 
     // 2. 建立储存图的结构
 

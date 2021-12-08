@@ -1,5 +1,5 @@
-#ifndef _TIME__
-#define _TIME__
+#ifndef _DATE_TIME__
+#define _DATE_TIME__
 
 #include <string>
 
@@ -11,29 +11,30 @@ class Datetime;
 class TimeDelta
 {
 public:
-    TimeDelta(Datetime start, Datetime end);
+    TimeDelta(int d, int m) : days(d), minutes(m) {}
+    TimeDelta(Datetime &start, Datetime &end);
     TimeDelta(const TimeDelta &other);
     ~TimeDelta();
 
     string format();
 
     TimeDelta &operator=(const TimeDelta &other);
-    bool operator>(const Datetime &other);
-    bool operator<(const Datetime &other);
-    bool operator>=(const Datetime &other);
-    bool operator<=(const Datetime &other);
-    bool operator==(const Datetime &other);
-
-    friend Datetime;
+    bool operator>(const TimeDelta &other);
+    bool operator<(const TimeDelta &other);
+    bool operator>=(const TimeDelta &other);
+    bool operator<=(const TimeDelta &other);
+    bool operator==(const TimeDelta &other);
+    bool operator!=(const TimeDelta &other);
 
 private:
     int days;
-    int minutes;
+    int minutes; // 0 ~ 60 * 24
 };
 
 class Datetime
 {
 public:
+    Datetime() {}
     Datetime(int y, int m, int d, int h, int min)
         : year(y), month(m), day(d), hour(h), minute(min) {}
     Datetime(string &formatted_string); // format : "month/day/year hour:minute"
@@ -54,8 +55,7 @@ public:
     bool operator>=(const Datetime &other);
     bool operator<=(const Datetime &other);
     bool operator==(const Datetime &other);
-
-    friend TimeDelta;
+    bool operator!=(const Datetime &other);
 
     TimeDelta &operator-(const Datetime &other);
 
