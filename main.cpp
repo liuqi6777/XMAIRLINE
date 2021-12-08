@@ -35,7 +35,7 @@ private:
 int main()
 {
     // 1. 读取数据，将字符串转换成航班数据并存储在一个 vector 中
-    string data_path = "data\\airline.csv";
+    string data_path = "..\\data\\airline.csv";
     vector<Flight> flights;
     read_data(data_path, flights);
 

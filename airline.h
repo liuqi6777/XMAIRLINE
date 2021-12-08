@@ -34,7 +34,7 @@ public:
         : id(id), departure_airport(d), arrival_airport(a), flight_type(ft),
           airplane_type(at), departure_time(dtime), arrival_time(atime), fares(fares) {}
 
-    Flight(Flight &other);
+    Flight(const Flight &other);
     ~Flight() {};
 
     int ID() const;
@@ -49,7 +49,7 @@ public:
 
     Flight &operator=(const Flight &other);
 
-    friend ostream &operator>>(ostream &os, const Flight &self);
+    friend ostream &operator<<(ostream &os, const Flight &flight);
 
 private:
     int id;
@@ -68,7 +68,7 @@ public:
     AirLine(vector<Flight> &flights);
     ~AirLine();
 
-    vector<int>& get_ids();
+    vector<int> get_ids();
     AirportID get_departure_airport();
     AirportID get_arrival_airport();
     Datetime get_departure_time();
@@ -81,5 +81,7 @@ private:
     vector<Flight> flights;
     int airport_num; // 途经机场的个数（包括起点和终点）
 };
+
+#include "airline.cpp"
 
 #endif

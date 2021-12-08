@@ -24,7 +24,7 @@ void split(const string &s, vector<string> &tokens, const string &delimiters = "
     }
 }
 
-Flight &get_flight(ifstream &ifs)
+Flight get_flight(ifstream &ifs)
 {
     string str;
     getline(ifs, str);
@@ -42,16 +42,16 @@ Flight &get_flight(ifstream &ifs)
     AirportID dairport = stoi(infos[4]);
     AirportID aairport = stoi(infos[5]);
     FlightType ftype = infos[2] == "Dome" ? Dome : Intl;
-    AirplaneType atype = stoi(infos[9]) == 1 ? type1 : (stoi(infos[9]) == 2) ? type2
-                                                                             : type3;
+    AirplaneType atype = stoi(infos[9]) == 1 ? type1 : (stoi(infos[9]) == 2) ? type2 : type3;
     Datetime dtime(infos[6]);
     Datetime atime(infos[7]);
     int fares(stoi(infos[10]));
 
-    return Flight(id, dairport, aairport, ftype, atype, dtime, atime, fares);
+    Flight flight(id, dairport, aairport, ftype, atype, dtime, atime, fares);
+    return flight;
 }
 
-vector<Flight> &get_flights(ifstream &ifs)
+vector<Flight> get_flights(ifstream &ifs)
 {
     string head;
     getline(ifs, head);

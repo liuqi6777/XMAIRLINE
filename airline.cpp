@@ -1,7 +1,7 @@
 #include "airline.h"
 #include <assert.h>
 
-Flight::Flight(Flight &other)
+Flight::Flight(const Flight &other)
 {
     *this = other;
 }
@@ -61,11 +61,12 @@ Flight& Flight::operator=(const Flight &other)
     departure_time = other.departure_time;
     arrival_time = other.arrival_time;
     fares = other.fares;
+    return *this;
 }
 
-ostream &operator>>(ostream &os, const Flight &self)
+ostream &operator<<(ostream &os, const Flight &flight)
 {
-    // TODO: 航班信息输出
+    os << flight.id << endl;
     return os;
 }
 
@@ -84,7 +85,7 @@ AirLine::~AirLine()
 
 }
 
-vector<int>& AirLine::get_ids()
+vector<int> AirLine::get_ids()
 {
     int flights_num = flights.size();
     vector<int> ids(flights_num);

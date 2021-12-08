@@ -22,6 +22,7 @@ TimeDelta &TimeDelta::operator=(const TimeDelta &other)
 {
     this->days = other.days;
     this->minutes = other.minutes;
+    return *this;
 }
 
 bool TimeDelta::operator>(const TimeDelta &other)
@@ -83,6 +84,7 @@ Datetime &Datetime::operator=(const Datetime &other)
     day = other.day;
     hour = other.hour;
     minute = other.minute;
+    return *this;
 }
 
 int Datetime::get_year() const
@@ -151,9 +153,10 @@ bool Datetime::operator==(const Datetime &other)
     return !(*this != other);
 }
 
-TimeDelta &Datetime::operator-(const Datetime &other)
+TimeDelta Datetime::operator-(const Datetime &other)
 {
     int days = 0, minutes = 0;
     // TODO: 时间差计算
-    return TimeDelta(days, minutes);
+    TimeDelta delta(days, minutes);
+    return delta;
 }

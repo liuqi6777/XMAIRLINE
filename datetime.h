@@ -57,7 +57,7 @@ public:
     bool operator==(const Datetime &other);
     bool operator!=(const Datetime &other);
 
-    TimeDelta &operator-(const Datetime &other);
+    TimeDelta operator-(const Datetime &other);
 
 private:
     int year;
@@ -66,5 +66,7 @@ private:
     int hour;
     int minute;
 };
+
+#include "datetime.cpp"
 
 #endif
