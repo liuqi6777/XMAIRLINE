@@ -109,7 +109,7 @@ AirportID AirLine::get_departure_airport()
 
 AirportID AirLine::get_arrival_airport()
 {
-    return flights.end()->get_arrival_airport();
+    return (flights.end() - 1)->get_arrival_airport();
 }
 
 Datetime AirLine::get_departure_time()
@@ -119,7 +119,7 @@ Datetime AirLine::get_departure_time()
 
 Datetime AirLine::get_arrival_time()
 {
-    return flights.end()->get_arrival_time();
+    return (flights.end() - 1)->get_arrival_time();
 }
 
 TimeDelta AirLine::get_airline_time()
@@ -154,6 +154,7 @@ ostream &operator<<(ostream &os, AirLine &airline)
        << "| Arrival   Airport : " << airline.get_arrival_airport() << endl
        << "| Departure    Time : " << airline.get_departure_time() << endl
        << "| Arrival      Time : " << airline.get_arrival_time() << endl
+       << "| Airline      Time : " << airline.get_airline_time() << endl
        << "|             Fares : " << airline.get_fares() << endl
        << "----------------------------------------" << endl;
     return os;

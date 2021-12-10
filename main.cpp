@@ -1,52 +1,81 @@
-#include <iostream>
+/***********************************************************
+ * 中国人民大学，2021年秋季学期，数据结构，大作业，航班路线查询系统
+ *
+ * Author: Liu Qi
+ * Time:   2021.12
+ * *********************************************************/
 
-#include "graph.h"
-#include "airline.h"
-#include "datetime.h"
-#include "datautils.h"
-
-class App
-{
-public:
-    App() {};
-
-    void load_data(ALGraph<AirportID, Flight> *data);
-
-    vector<AirLine> find(AirportID departure, AirportID arrival);
-    vector<AirLine> find_by_departure_time(AirportID departure, AirportID arrival, Datetime start, Datetime end);
-    vector<AirLine> find_by_arrival_time(AirportID departure, AirportID arrival, Datetime start, Datetime end);
-    vector<AirLine> find_by_airplane_type(AirportID departure, AirportID arrival, AirplaneType type);
-    vector<AirLine> find_by_transit_times(AirportID departure, AirportID arrival, TimeDelta times);
-    vector<AirLine> find_by_direct(AirportID departure, AirportID arrival);
-    vector<AirLine> find_by_filght_time(AirportID departure, AirportID arrival, int lowest, int highest, int topk = -1, bool sorted = false);
-    vector<AirLine> find_by_fare(AirportID departure, AirportID arrival, int lowest, int highest, int topk = -1, bool sorted = false);
-
-    void sort();
-
-    void run();
-
-private:
-    ALGraph<AirportID, Flight> *data;
-
-    void find_baisc(AirportID departure, AirportID arrival, int (*condition)(const AirLine &));
-    void sort_basic(int (*cmp)(const AirLine&, const AirLine &)); // std::sort()
-};
+#include "App.h"
 
 int main()
 {
     // 1. 读取数据，将字符串转换成航班数据并存储在一个 vector 中
+    //    - 机场 ID 最小为 1，最大为 79
     string data_path = "..\\data\\airline.csv";
     vector<Flight> flights;
     read_data(data_path, flights);
 
     // 2. 建立储存图的结构
+    int airport_num = 79;            // 机场数量，即顶点数量
+    int flight_num = flights.size(); // 航班数量
+
+    int vexnum = airport_num + 1;
+    int arcnum = 0;
+
+    cout << "airport_num : " << airport_num << endl;
+    cout << "flight_num  : " << flight_num << endl;
+
+    // - 2.1 建立邻接矩阵
+    vector<AirportID> vertexs(MAX_VERTEX_NUM);
+    for (int i = 1; i <= airport_num; i++)
+        vertexs[i] = i;
+
+    vector<vector<Flights *>> arcs(MAX_VERTEX_NUM);
+    for (int i = 0; i < MAX_VERTEX_NUM; i++)
+        arcs[i] = vector<Flights *>(MAX_VERTEX_NUM, NULL);
+    for (vector<Flight>::iterator iter = flights.begin(); iter != flights.end(); iter++)
+    {
+        int i = iter->get_departure_airport(), j = iter->get_arrival_airport();
+        if (arcs[i][j] == NULL)
+        {
+            arcnum++;
+            arcs[i][j] = new Flights;
+        }
+        arcs[i][j]->push_back(*iter);
+    }
+    MGraph<AirportID, Flights *> mgraph(vertexs, arcs, vexnum, arcnum);
+
+    cout << "vexnum : " << vexnum << endl;
+    cout << "arcnum : " << arcnum << endl;
+
+    // - 2.2 建立邻接表
+    vector<VNode<AirportID, Flights *>> vexs(vexnum);
+    for (int i = 1; i < vexnum; i++)
+        vexs[i].data = i;
+    for (int i = 1; i < vexnum; i++)
+        for (int j = 1; j < vexnum; j++)
+            if (arcs[i][j])
+            {
+                ArcNode<Flights *> node = {j, arcs[i][j]};
+                vexs[i].l.push_back(node);
+            }
+    ALGraph<AirportID, Flights *> algraph(vexs, vexnum, arcnum);
 
     // 3. 启动应用
     App app;
+    app.load_mgraph(&mgraph);
+    app.load_algraph(&algraph);
     app.run();
-}
 
-void App::run()
-{
-    std::cout << "Hello, world!\n";
+    // 4. 释放内存
+    for (int i = 0; i < MAX_VERTEX_NUM; i++)
+    {
+        for (int j = 0; j < MAX_VERTEX_NUM; j++)
+        {
+            if (arcs[i][j])
+                delete arcs[i][j];
+        }
+    }
+
+    return 0;
 }
