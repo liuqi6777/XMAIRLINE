@@ -11,7 +11,7 @@ class Datetime;
 class TimeDelta
 {
 public:
-    TimeDelta(int d, int m) : days(d), minutes(m) {}
+    TimeDelta(int d, int h, int m) : days(d), hours(h), minutes(m) {} // TODO: 增加范围验证
     TimeDelta(Datetime &start, Datetime &end);
     TimeDelta(const TimeDelta &other);
     ~TimeDelta();
@@ -26,9 +26,12 @@ public:
     bool operator==(const TimeDelta &other);
     bool operator!=(const TimeDelta &other);
 
+    friend ostream& operator<<(ostream &os, const TimeDelta &td);
+
 private:
     int days;
-    int minutes; // 0 ~ 60 * 24
+    int hours; // 0 ~ 24
+    int minutes; // 0 ~ 60
 };
 
 class Datetime
@@ -56,6 +59,8 @@ public:
     bool operator<=(const Datetime &other);
     bool operator==(const Datetime &other);
     bool operator!=(const Datetime &other);
+
+    friend ostream& operator<<(ostream &os, const Datetime &dt);
 
     TimeDelta operator-(const Datetime &other);
 

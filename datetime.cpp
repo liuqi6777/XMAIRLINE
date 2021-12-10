@@ -21,18 +21,19 @@ TimeDelta::~TimeDelta()
 TimeDelta &TimeDelta::operator=(const TimeDelta &other)
 {
     this->days = other.days;
+    this->hours = other.hours;
     this->minutes = other.minutes;
     return *this;
 }
 
 bool TimeDelta::operator>(const TimeDelta &other)
 {
-    return days > other.days || (days == other.days && minutes > other.minutes);
+    return days > other.days || (days == other.days && 60 * hours + minutes > 60 * other.hours + other.minutes);
 }
 
 bool TimeDelta::operator<(const TimeDelta &other)
 {
-    return days < other.days || (days == other.days && minutes < other.minutes);
+    return days < other.days || (days == other.days && 60 * hours + minutes < 60 * other.hours + other.minutes);
 }
 
 bool TimeDelta::operator>=(const TimeDelta &other)
@@ -53,6 +54,12 @@ bool TimeDelta::operator==(const TimeDelta &other)
 bool TimeDelta::operator!=(const TimeDelta &other)
 {
     return !(*this == other);
+}
+
+ostream& operator<<(ostream &os, const TimeDelta &td)
+{
+    printf("<%d Day(s), %d Hour(s), %d Minute(s)>", td.days, td.hours, td.minutes);
+    return os;
 }
 
 Datetime::Datetime(string &formatted_string)
@@ -155,8 +162,31 @@ bool Datetime::operator==(const Datetime &other)
 
 TimeDelta Datetime::operator-(const Datetime &other)
 {
-    int days = 0, minutes = 0;
-    // TODO: 时间差计算
-    TimeDelta delta(days, minutes);
+    assert(*this >= other);
+    int days = 0, hours = 0, minutes = 0;
+    // FIXME: 需修复跨年和跨月无法计算的问题
+    int m1 = this->hour * 60 + this->minute;
+    int m2 = other.hour * 60 + other.minute;
+    if (m1 >= m2)
+    {
+        days = this->day - other.day;
+        minutes = m1 - m2;
+        hours = minutes / 60;
+        minutes = minutes % 60;
+    }
+    else
+    {
+        days = this->day - other.day - 1;
+        minutes = m1 - m2 + 24 * 60;
+        hours = minutes / 60;
+        minutes = minutes % 60;
+    }
+    TimeDelta delta(days, hours, minutes);
     return delta;
+}
+
+ostream& operator<<(ostream &os, const Datetime &dt)
+{
+    printf("%d/%d/%d %d:%d", dt.month, dt.day, dt.year, dt.hour, dt.minute);
+    return os;
 }
