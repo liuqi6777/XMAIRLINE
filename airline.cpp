@@ -51,7 +51,7 @@ int Flight::get_fares() const
     return this->fares;
 }
 
-Flight& Flight::operator=(const Flight &other)
+Flight &Flight::operator=(const Flight &other)
 {
     id = other.id;
     departure_airport = other.departure_airport;
@@ -66,7 +66,16 @@ Flight& Flight::operator=(const Flight &other)
 
 ostream &operator<<(ostream &os, const Flight &flight)
 {
-    os << flight.id << endl;
+    os << "----------------------------------------" << endl
+       << "|             Flight's INFO             " << endl
+       << "|---------------------------------------" << endl
+       << "|                ID : " << flight.id<< endl
+       << "| Departure Airport : " << flight.departure_airport  << endl
+       << "| Arrival   Airport : " << flight.arrival_airport << endl
+       << "| Departure    Time : " << flight.departure_time << endl
+       << "| Arrival      Time : " << flight.arrival_time << endl
+       << "|             Fares : " << flight.fares << endl
+       << "----------------------------------------" << endl;
     return os;
 }
 
@@ -82,14 +91,13 @@ AirLine::AirLine(vector<Flight> &flights)
 
 AirLine::~AirLine()
 {
-
 }
 
 vector<int> AirLine::get_ids()
 {
     int flights_num = flights.size();
     vector<int> ids(flights_num);
-    for (int i = 0; i != flights_num; ++ i)
+    for (int i = 0; i != flights_num; ++i)
         ids[i] = flights[i].ID();
     return ids;
 }
@@ -127,7 +135,26 @@ int AirLine::transit_times()
 int AirLine::get_fares()
 {
     int sum = 0;
-    for (vector<Flight>::iterator iter = flights.begin(); iter != flights.end(); ++ iter)
+    for (vector<Flight>::iterator iter = flights.begin(); iter != flights.end(); ++iter)
         sum += iter->get_fares();
     return sum;
+}
+
+ostream &operator<<(ostream &os, AirLine &airline)
+{
+    os << "----------------------------------------" << endl
+       << "|             Airline's INFO            " << endl
+       << "|---------------------------------------" << endl;
+    os << "| " << airline.get_departure_airport();
+    for (int i = 0; i < airline.flights.size(); i++)
+        os << " => " << airline.flights[i].get_arrival_airport();
+    os << endl;
+    os << "|---------------------------------------" << endl
+       << "| Departure Airport : " << airline.get_departure_airport()  << endl
+       << "| Arrival   Airport : " << airline.get_arrival_airport() << endl
+       << "| Departure    Time : " << airline.get_departure_time() << endl
+       << "| Arrival      Time : " << airline.get_arrival_time() << endl
+       << "|             Fares : " << airline.get_fares() << endl
+       << "----------------------------------------" << endl;
+    return os;
 }

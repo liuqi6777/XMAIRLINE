@@ -10,6 +10,7 @@
 using namespace std;
 
 const int AIRPORT_NUM = 79;
+const int MAX_TRANSIT_TIMES = 4;
 
 typedef enum FlightType
 {
@@ -62,6 +63,8 @@ private:
     int fares;
 };
 
+typedef vector<Flight> Flights; // 真正的弧的类型（从一个机场到另一个机场可能有多班飞机）
+
 class AirLine // 航线（路径）
 {
 public:
@@ -76,6 +79,8 @@ public:
     TimeDelta get_airline_time();
     int transit_times();
     int get_fares();
+
+    friend ostream &operator<<(ostream &os, AirLine &airline);
 
 private:
     vector<Flight> flights;
