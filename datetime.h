@@ -26,7 +26,7 @@ public:
     bool operator==(const TimeDelta &other);
     bool operator!=(const TimeDelta &other);
 
-    friend ostream& operator<<(ostream &os, const TimeDelta &td);
+    friend std::ostream& operator<<(std::ostream &os, const TimeDelta &td);
 
 private:
     int days;
@@ -60,7 +60,7 @@ public:
     bool operator==(const Datetime &other);
     bool operator!=(const Datetime &other);
 
-    friend ostream& operator<<(ostream &os, const Datetime &dt);
+    friend std::ostream& operator<<(std::ostream &os, const Datetime &dt);
 
     TimeDelta operator-(const Datetime &other);
 

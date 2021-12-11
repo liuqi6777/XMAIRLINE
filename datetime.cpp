@@ -56,7 +56,7 @@ bool TimeDelta::operator!=(const TimeDelta &other)
     return !(*this == other);
 }
 
-ostream& operator<<(ostream &os, const TimeDelta &td)
+std::ostream& operator<<(std::ostream &os, const TimeDelta &td)
 {
     printf("<%d Day(s), %d Hour(s), %d Minute(s)>", td.days, td.hours, td.minutes);
     return os;
@@ -125,12 +125,8 @@ bool Datetime::operator>(const Datetime &other)
         return true;
     else if (year == other.year && month > other.month)
         return true;
-    else if (month == other.month && day > other.day)
-        return true;
-    else if (day == other.day && hour > other.hour)
-        return true;
-    else if (hour == other.hour && minute > other.minute)
-        return true;
+    else if (year == other.year && month == other.month)
+        return day * 24 * 60 + hour * 60 + minute > other.day * 24 * 60 + other.hour * 60 + other.minute;
     else
         return false;
 }
@@ -185,7 +181,7 @@ TimeDelta Datetime::operator-(const Datetime &other)
     return delta;
 }
 
-ostream& operator<<(ostream &os, const Datetime &dt)
+std::ostream& operator<<(std::ostream &os, const Datetime &dt)
 {
     printf("%d/%d/%d %d:%d", dt.month, dt.day, dt.year, dt.hour, dt.minute);
     return os;
