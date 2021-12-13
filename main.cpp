@@ -6,9 +6,40 @@
  * *********************************************************/
 
 #include "App.h"
+#include <getopt.h>
 
-int main()
+void print_usage()
 {
+    printf(
+        "Usage:\n"
+
+    );
+    exit(0);
+}
+
+int main(int argc, char *argv[])
+{
+    // 0. 命令行解析
+    int opt = 0;
+    int departure = -1, arrival = -1;
+    while ((opt = getopt(argc, argv, "h::d:a:")) != -1)
+    {
+        switch (opt)
+        {
+        case 'h':
+            print_usage();
+            break;
+        case 'd':
+            departure = atoi(optarg);
+            break;
+        case 'a':
+            arrival = atoi(optarg);
+            break;
+        default:
+            print_usage();
+        }
+    }
+
     // 1. 读取数据，将字符串转换成航班数据并存储在一个 vector 中
     //    - 机场 ID 最小为 1，最大为 79
     string data_path = "..\\data\\airline.csv";
@@ -57,7 +88,7 @@ int main()
             if (arcs[i][j])
             {
                 ArcNode<Flights *> node = {j, arcs[i][j]};
-                vexs[i].l.push_back(node);
+                vexs[i].arc_list.push_back(node);
             }
     ALGraph<AirportID, Flights *> algraph(vexs, vexnum, arcnum);
 
@@ -65,6 +96,8 @@ int main()
     App app;
     app.load_mgraph(&mgraph);
     app.load_algraph(&algraph);
+    if (departure != -1 && arrival != -1)
+        app.set_departure_arrival(departure, arrival);
     app.run();
 
     // 4. 释放内存
