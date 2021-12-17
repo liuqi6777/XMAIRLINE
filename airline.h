@@ -10,7 +10,7 @@
 using namespace std;
 
 const int AIRPORT_NUM = 79;
-const int MAX_TRANSIT_TIMES = 4;
+const int MAX_TRANSIT_TIMES = 5;
 
 typedef enum FlightType
 {

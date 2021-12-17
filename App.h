@@ -6,7 +6,7 @@
 class App
 {
 public:
-    App() : mgraph(NULL), algraph(NULL), detail(false), diff(false), max_len(4), departure(-1), arrival(-1) {}
+    App() : mgraph(NULL), algraph(NULL), detail(false), diff(false), max_len(MAX_TRANSIT_TIMES), departure(-1), arrival(-1) {}
 
     void load_mgraph(MGraph<AirportID, Flights *> *data);
     void load_algraph(ALGraph<AirportID, Flights *> *data);
@@ -93,7 +93,21 @@ void App::run()
     }
     vector<AirLine> first_results = find_baisc(departure, arrival);
 
-    cout << "You can give some limits:\n"
+    // cout << "You can give some limits:\n"
+    //         "Input 0 means no limits\n"
+    //         "      1 to set the range of departure times;\n"
+    //         "      2 to set the range of arrival times;\n"
+    //         "      3 to choose airplane type;\n"
+    //         "      4 to set the range of transit times (0 means direct);\n"
+    //         "      5 to set the range of the flight time (including transit time);\n"
+    //         "      6 to set the range of fares;\n";
+
+    int m = 1;
+
+    vector<AirLine> res = first_results;
+    while (m > 0 && m <= 6)
+    {
+        cout << "You can give some limits:\n"
             "Input 0 means no limits\n"
             "      1 to set the range of departure times;\n"
             "      2 to set the range of arrival times;\n"
@@ -101,75 +115,72 @@ void App::run()
             "      4 to set the range of transit times (0 means direct);\n"
             "      5 to set the range of the flight time (including transit time);\n"
             "      6 to set the range of fares;\n";
-
-    int m = -1;
-    cin >> m;
-
-    vector<AirLine> res;
-    if (m == 0)
-    {
-        res = first_results;
-        // cout << "(" << first_results.size() << " possible airlines in total)" << endl;
-        // for (int i = 0; i < first_results.size(); i++)
-        //     cout << "[AIRLINE " << i + 1 << "]" << endl
-        //          << first_results[i];
-    }
-    else if (m == 1)
-    {
-        int year, month, day, hour, min;
-        cout << "Please input starting time(format: y m d h min): ";
-        cin >> year >> month >> day >> hour >> min;
-        Datetime start(year, month, day, hour, min);
-        cout << "Please input ending time: ";
-        cin >> year >> month >> day >> hour >> min;
-        Datetime end(year, month, day, hour, min);
-        res = find_by_departure_time(first_results, start, end);
-    }
-    else if (m == 2)
-    {
-        string datetime;
-        cout << "Please input starting time(format: month/day/year hour:minute): ";
-        getline(cin, datetime);
-        Datetime start(datetime);
-        cout << "Please input ending time: ";
-        getline(cin, datetime);
-        Datetime end(datetime);
-        res = find_by_arrival_time(first_results, start, end);
-    }
-    else if (m == 3)
-    {
-    }
-    else if (m == 4)
-    {
-        int times = 0;
-        cout << "Please input the max num of transit times (0 means direct): ";
-        cin >> times;
-        res = find_by_transit_times(first_results, times);
-    }
-    else if (m == 5)
-    {
-        int day, hour, minute;
-        cout << "Please input the min flight time for your flight (format: day hour min): ";
-        cin >> day >> hour >> minute;
-        TimeDelta least(day, hour, minute);
-        cout << "Please input the max flight time for your flight: ";
-        cin >> day >> hour >> minute;
-        TimeDelta most(day, hour, minute);
-        res = find_by_airline_time(first_results, least, most);
-    }
-    else if (m == 6)
-    {
-        int least, most;
-        cout << "Please input the min fares: ";
-        cin >> least;
-        cout << "Please input the max fares: ";
-        cin >> most;
-        res = find_by_fare(first_results, least, most);
-    }
-    else
-    {
-        cout << "Please input a number between 1 and 6!\n";
-        return;
+        cin >> m;
+        assert(getchar() == '\n');
+        if (m == 0)
+        {
+            // cout << "(" << first_results.size() << " possible airlines in total)" << endl;
+            // for (int i = 0; i < first_results.size(); i++)
+            //     cout << "[AIRLINE " << i + 1 << "]" << endl
+            //          << first_results[i];
+        }
+        else if (m == 1)
+        {
+            string datetime;
+            cout << "Please input starting time(format: month/day/year hour:minute): ";
+            getline(cin, datetime);
+            Datetime start(datetime);
+            cout << "Please input ending time: ";
+            getline(cin, datetime);
+            Datetime end(datetime);
+            res = find_by_departure_time(res, start, end);
+        }
+        else if (m == 2)
+        {
+            string datetime;
+            cout << "Please input starting time(format: month/day/year hour:minute): ";
+            getline(cin, datetime);
+            Datetime start(datetime);
+            cout << "Please input ending time: ";
+            getline(cin, datetime);
+            Datetime end(datetime);
+            res = find_by_arrival_time(res, start, end);
+        }
+        else if (m == 3)
+        {
+        }
+        else if (m == 4)
+        {
+            int times = 0;
+            cout << "Please input the max num of transit times (0 means direct): ";
+            cin >> times;
+            res = find_by_transit_times(res, times);
+        }
+        else if (m == 5)
+        {
+            int day, hour, minute;
+            cout << "Please input the min flight time for your flight (format: day hour min): ";
+            cin >> day >> hour >> minute;
+            TimeDelta least(day, hour, minute);
+            cout << "Please input the max flight time for your flight: ";
+            cin >> day >> hour >> minute;
+            TimeDelta most(day, hour, minute);
+            res = find_by_airline_time(res, least, most);
+        }
+        else if (m == 6)
+        {
+            int least, most;
+            cout << "Please input the min fares: ";
+            cin >> least;
+            cout << "Please input the max fares: ";
+            cin >> most;
+            res = find_by_fare(res, least, most);
+        }
+        else
+        {
+            cout << "Please input a number between 1 and 6!\n";
+            return;
+        }
     }
 
     cout << "You can sort the results by different rules: \n"

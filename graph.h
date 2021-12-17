@@ -28,7 +28,7 @@ public:
     void bfs_traverse(int vertex_idx); // 从某个顶点开始广度优先遍历
 
     vector<vector<VertexType>> find_all_paths(int v1_idx, int v2_idx, int max_len = -1);
-    vector<VertexType> find_shortest_path(int v1_idx, int v2_idx, int (*cmp)(const InfoType &, const InfoType &)); // 寻找最短路径
+    vector<VertexType> find_shortest_path(int v1_idx, int v2_idx, bool (*cmp)(const InfoType &, const InfoType &)); // 寻找最短路径
 
     VertexType get_vertex(const int idx);
     InfoType get_arc_info(const int v1_idx, const int v2_idx);
@@ -58,7 +58,7 @@ struct VNode
 {
     VertexType data; // 顶点信息
     // ArcNode<InfoType> *firstarc; // 指向第一条依附该顶点的弧
-    vector<ArcNode<InfoType>> l; // 指向弧的链表
+    vector<ArcNode<InfoType>> arc_list; // 指向弧的链表（使用数组替代简化）
 };
 
 
@@ -74,7 +74,7 @@ public:
     void bfs_traverse(int vertex_idx); // 从某个顶点开始广度优先遍历
 
     vector<vector<VertexType>> find_all_paths(int v1_idx, int v2_idx, int max_len = -1);
-    vector<VertexType> find_shortest_path(int v1_idx, int v2_idx, int (*cmp)(const InfoType &, const InfoType &)); // 寻找最短路径
+    vector<VertexType> find_shortest_path(int v1_idx, int v2_idx, bool (*cmp)(const InfoType &, const InfoType &)); // 寻找最短路径
 
 private:
     vector<VNode<VertexType, InfoType>> vertices;
@@ -82,10 +82,6 @@ private:
 };
 
 #endif
-
-/*******************************************************
- * 这是一条分界线
- *******************************************************/
 
 template <typename VertexType, typename InfoType>
 MGraph<VertexType, InfoType>::MGraph(vector<VertexType> &vexs, vector<vector<InfoType>> &arcs, int vexnum, int arcnum)
@@ -208,16 +204,13 @@ vector<vector<VertexType>> MGraph<VertexType, InfoType>::find_all_paths(int v1_i
 }
 
 template <typename VertexType, typename InfoType>
-vector<VertexType> MGraph<VertexType, InfoType>::find_shortest_path(int v1_idx, int v2_idx, int (*cmp)(const InfoType &, const InfoType &))
+vector<VertexType> MGraph<VertexType, InfoType>::find_shortest_path(int v1_idx, int v2_idx, bool (*cmp)(const InfoType &, const InfoType &))
 {
     // TODO: 邻接矩阵最短路径
     vector<VertexType> res;
     return res;
 }
 
-/***************************************************************
- * 这也是一条分界线
- * *************************************************************/
 
 template <typename VertexType, typename InfoType>
 ALGraph<VertexType, InfoType>::ALGraph(vector<VNode<VertexType, InfoType>> vexs, int vexnum, int arcnum)
@@ -225,14 +218,6 @@ ALGraph<VertexType, InfoType>::ALGraph(vector<VNode<VertexType, InfoType>> vexs,
     this->vertices = vexs;
     this->vexnum = vexnum;
     this->arcnum = arcnum;
-
-    // for (int i = 0; i < vertices.size(); i ++)
-    // {
-    //     cout << "vertex (" << i << ")";
-    //     for (int j = 0; j < this->vertices[i].l.size(); j ++)
-    //         cout << " => " << vertices[i].l[j].adjvex;
-    //     cout << endl << endl;
-    // }
 }
 
 template <typename VertexType, typename InfoType>
@@ -240,9 +225,9 @@ ALGraph<VertexType, InfoType>::~ALGraph()
 {
     for (int i = 0; i < vertices.size(); i++)
     {
-        for (int j = 0; j < this->vertices[i].l.size(); j++)
-            if (vertices[i].l[j].info)
-                delete vertices[i].l[j].info;
+        for (int j = 0; j < this->vertices[i].arc_list.size(); j++)
+            if (vertices[i].arc_list[j].info)
+                delete vertices[i].arc_list[j].info;
     }
 }
 
@@ -255,7 +240,7 @@ vector<vector<VertexType>> ALGraph<VertexType, InfoType>::find_all_paths(int v1_
 }
 
 template <typename VertexType, typename InfoType>
-vector<VertexType> ALGraph<VertexType, InfoType>::find_shortest_path(int v1_idx, int v2_idx, int (*cmp)(const InfoType &, const InfoType &))
+vector<VertexType> ALGraph<VertexType, InfoType>::find_shortest_path(int v1_idx, int v2_idx, bool (*cmp)(const InfoType &, const InfoType &))
 {
     // TODO: 邻接表最短路径
     vector<VertexType> res;

@@ -148,6 +148,9 @@ ostream &operator<<(ostream &os, AirLine &airline)
     os << "| " << airline.get_departure_airport();
     for (int i = 0; i < airline.flights.size(); i++)
         os << " => " << airline.flights[i].get_arrival_airport();
+    os << endl << "|";
+    for (int i = 0; i < airline.flights.size(); i++)
+        os << "    " << airline.flights[i].ID();
     os << endl;
     os << "|---------------------------------------" << endl
        << "| Departure Airport : " << airline.get_departure_airport()  << endl
